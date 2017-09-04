@@ -6,8 +6,14 @@ import io.humble.video.Rational
 import io.humble.video.awt.MediaPictureConverter
 import io.humble.video.awt.MediaPictureConverterFactory
 import processing.core.PApplet
+import processing.core.PConstants
 import processing.core.PImage
+import java.awt.Color
 import java.awt.image.BufferedImage
+import java.awt.image.DataBufferByte
+import java.awt.image.DataBufferInt
+
+
 
 
 class HumbleVideo(val parent: PApplet, val filename: String) : Video {
@@ -58,7 +64,9 @@ class HumbleVideo(val parent: PApplet, val filename: String) : Video {
                 videoDecoder.height,
                 videoDecoder.pixelFormat)
 
-        //frame = PImage(image)
+        frame = PImage(videoDecoder.width,
+                videoDecoder.height,
+                PConstants.RGB)
 
         converter = MediaPictureConverterFactory.createConverter(
                 MediaPictureConverterFactory.HUMBLE_BGR_24,
@@ -122,7 +130,8 @@ class HumbleVideo(val parent: PApplet, val filename: String) : Video {
                     bytesRead += videoDecoder.decode(picture, packet, offset)
                     if (picture.isComplete) {
                         image = converter.toImage(image, picture)
-                        return PImage(image)
+                        updateFrame()
+                        return frame
                     }
                     offset += bytesRead
                 } while (offset < packet.size)
@@ -134,10 +143,35 @@ class HumbleVideo(val parent: PApplet, val filename: String) : Video {
             videoDecoder.decode(picture, null, 0)
             if (picture.isComplete) {
                 image = converter.toImage(image, picture)
-                return PImage(image)
+                updateFrame()
+                return frame
             }
         }
 
-        return PImage(image)
+        return frame
+    }
+
+    private fun updateFrame()
+    {
+        if(image == null)
+            return
+
+        // very slow
+        (0 until frame.width).forEach { x ->
+            (0 until frame.height).forEach {y ->
+                frame.set(x, y, image!!.getRGB(x, y))
+            }
+        }
+        frame.updatePixels()
+
+
+        /*
+        frame.loadPixels()
+        val g = (frame.native as BufferedImage).createGraphics()
+        g.color= Color.cyan
+        g.fillRect(100, 100,100, 100)
+        g.dispose()
+        frame.updatePixels()
+        */
     }
 }
