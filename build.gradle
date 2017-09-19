@@ -47,6 +47,8 @@ dependencies {
 
     compile group: 'io.humble', name: 'humble-video-all', version: '0.2.1'
 
+    compile group: 'com.github.hoary', name: 'JavaAV-Project', version: '1.0', ext: 'pom'
+
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
     compile files('lib/processing/core/library/core.jar')

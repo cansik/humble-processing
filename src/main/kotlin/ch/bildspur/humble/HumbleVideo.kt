@@ -7,13 +7,9 @@ import io.humble.video.awt.MediaPictureConverter
 import io.humble.video.awt.MediaPictureConverterFactory
 import processing.core.PApplet
 import processing.core.PConstants
+import processing.core.PGraphics
 import processing.core.PImage
-import java.awt.Color
 import java.awt.image.BufferedImage
-import java.awt.image.DataBufferByte
-import java.awt.image.DataBufferInt
-
-
 
 
 class HumbleVideo(val parent: PApplet, val filename: String) : Video {
@@ -156,22 +152,5 @@ class HumbleVideo(val parent: PApplet, val filename: String) : Video {
         if(image == null)
             return
 
-        // very slow
-        (0 until frame.width).forEach { x ->
-            (0 until frame.height).forEach {y ->
-                frame.set(x, y, image!!.getRGB(x, y))
-            }
-        }
-        frame.updatePixels()
-
-
-        /*
-        frame.loadPixels()
-        val g = (frame.native as BufferedImage).createGraphics()
-        g.color= Color.cyan
-        g.fillRect(100, 100,100, 100)
-        g.dispose()
-        frame.updatePixels()
-        */
     }
 }
